@@ -33,7 +33,7 @@ spec:
       containers:
         - name: app
           # Replace with your public arm64 image
-          image: salmahossam12/barq-app:initial
+          image: salmahossam12/barq-app:da63b3d
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
