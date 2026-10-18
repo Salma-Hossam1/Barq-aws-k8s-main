@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/barq
+  IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/barq-app
 
 permissions:
   contents: write
@@ -57,7 +57,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Update image tag in the manifest
         run: |
-          sed -i "s#image: .*/barq:.*#image: ${{ env.IMAGE }}:${{ needs.build.outputs.tag }}#" k8s/app/deployment.yaml
+          sed -i "s#image: .*/barq-app:.*#image: ${{ env.IMAGE }}:${{ needs.build.outputs.tag }}#" k8s/app/deployment.yaml
       - name: Commit the change
         run: |
           git config user.name "github-actions"
