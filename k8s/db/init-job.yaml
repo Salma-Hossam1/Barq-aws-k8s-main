@@ -1,0 +1,48 @@
+# One-off Job that creates the "records" table on RDS.
+# RDS is private, so it is initialised from inside the cluster.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: barq-db-init
+  namespace: barq-assessment
+data:
+  init.sql: |
+    CREATE TABLE IF NOT EXISTS records (
+        id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        title varchar(200) NOT NULL CHECK (length(trim(title)) > 0)
+    );
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: barq-db-init
+  namespace: barq-assessment
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: psql
+          image: postgres:16-alpine
+          command: ["sh", "-c", 'psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f /sql/init.sql']
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: barq-runtime-secret
+                  key: DATABASE_URL
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+          volumeMounts:
+            - name: sql
+              mountPath: /sql
+      volumes:
+        - name: sql
+          configMap:
+            name: barq-db-init

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: barq-app-config
+  namespace: barq-assessment
+data:
+  APP_HOST: "0.0.0.0"
+  APP_PORT: "8080"
+  APP_MESSAGE: "Welcome to BARQ Systems"
+  # Redis runs inside the cluster -> reached by Service DNS name, not by IP
+  REDIS_URL: "redis://redis:6379/0"

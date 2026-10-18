@@ -1,0 +1,32 @@
+---
+- name: Wait for Kubernetes nodes to become Ready
+  ansible.builtin.command:
+    argv:
+      - kubectl
+      - --kubeconfig=/etc/kubernetes/admin.conf
+      - wait
+      - --for=condition=Ready
+      - nodes
+      - --all
+      - --timeout=180s
+  delegate_to: "{{ groups['control_plane'][0] }}"
+  become: true
+  changed_when: false
+
+- name: Display Kubernetes nodes
+  ansible.builtin.command:
+    argv:
+      - kubectl
+      - --kubeconfig=/etc/kubernetes/admin.conf
+      - get
+      - nodes
+      - -o
+      - wide
+  delegate_to: "{{ groups['control_plane'][0] }}"
+  become: true
+  register: kubernetes_nodes
+  changed_when: false
+
+- name: Show Kubernetes node status
+  ansible.builtin.debug:
+    var: kubernetes_nodes.stdout_lines

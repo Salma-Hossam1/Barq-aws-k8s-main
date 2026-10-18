@@ -1,0 +1,45 @@
+---
+- name: Prepare all Kubernetes nodes
+  hosts: k8s_nodes
+  become: true
+  roles:
+    - common
+
+- name: Install and configure containerd
+  hosts: k8s_nodes
+  become: true
+  roles:
+    - containerd
+
+- name: Install Kubernetes components
+  hosts: k8s_nodes
+  become: true
+  roles:
+    - kubernetes
+
+- name: Initialize the Kubernetes control plane
+  hosts: control_plane
+  become: true
+  roles:
+    - kubeadm
+
+- name: Install the Kubernetes CNI
+  hosts: control_plane
+  become: true
+  roles:
+    - cni
+
+- name: Join worker nodes to the cluster
+  hosts: workers
+  become: true
+  tasks:
+    - name: Include worker join tasks
+      ansible.builtin.include_role:
+        name: kubeadm
+        tasks_from: join-workers.yml
+
+- name: Validate the Kubernetes cluster
+  hosts: control_plane
+  become: true
+  roles:
+    - cluster_validation

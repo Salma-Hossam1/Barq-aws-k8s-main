@@ -1,0 +1,48 @@
+# ---
+# # Operating system
+# ansible_user: ubuntu
+
+# # Kubernetes version: keep the minor version consistent across nodes.
+# kubernetes_minor_version: "1.35"
+
+# # Container runtime
+# containerd_version: "2.2.1"
+
+# # Cluster networking
+# pod_cidr: "192.168.0.0/16"
+
+# # Kubernetes control plane
+# control_plane_endpoint: "{{ hostvars[groups['control_plane'][0]]['ansible_host'] }}"
+
+# # Runtime configuration
+# containerd_systemd_cgroup: true
+
+
+
+
+
+
+---
+# Kubernetes version
+kubernetes_version: "1.35"
+
+# Container runtime
+containerd_version: "2.2.1"
+containerd_config_cgroup_driver_systemd: true
+
+# Cluster networking
+pod_cidr: "10.244.0.0/16"
+
+# Control plane private IP
+control_plane_endpoint: "{{ hostvars[groups['control_plane'][0]]['ansible_private_ip'] }}"
+
+# Kubernetes networking configuration
+kubernetes_pod_network:
+  cni: "flannel"
+  cidr: "{{ pod_cidr }}"
+
+# Kubernetes repository
+kubernetes_apt_release_channel: "stable"
+
+# CNI
+flannel_version: "v0.27.4"

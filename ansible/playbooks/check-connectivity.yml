@@ -1,0 +1,9 @@
+
+---
+- name: Check connectivity to Kubernetes nodes
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Test Ansible connectivity
+      ansible.builtin.ping:

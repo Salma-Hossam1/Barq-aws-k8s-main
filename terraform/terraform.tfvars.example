@@ -1,0 +1,4 @@
+# Copy this file to terraform.tfvars and put your own public IP. Never commit terraform.tfvars.
+allowed_cidrs = ["203.0.113.10/32"]
+db_password = "change-me-use-a-strong-password"
+redis_auth_token = "CHANGE_ME_16_TO_128_CHARS_NO_SPECIAL"

@@ -1,0 +1,22 @@
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+terraform/terraform.tfvars
+*.auto.tfvars
+crash.log
+
+# Keys and secrets
+*.pem
+*.key
+barq-lab
+secret.yaml
+*-secret.yaml
+.env
+
+# Ansible
+ansible/inventory/aws.ini
+*.retry
+
+# macOS
+.DS_Store

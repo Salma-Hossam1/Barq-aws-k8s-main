@@ -1,0 +1,21 @@
+.git
+.github
+.env
+.env.*
+__pycache__
+**/__pycache__
+*.pyc
+logs
+docs
+tests
+assessment
+evidence
+database
+*.md
+*.bundle
+.assessment
+backups
+
+# Local runtime secrets
+config/app.env
+config/postgres.env

@@ -1,0 +1,27 @@
+---
+- name: Initialize the Kubernetes control plane
+  ansible.builtin.command:
+    argv:
+      - kubeadm
+      - init
+      - "--apiserver-advertise-address={{ ansible_private_ip }}"
+      - "--control-plane-endpoint={{ control_plane_endpoint }}"
+      - "--pod-network-cidr={{ pod_cidr }}"
+    creates: /etc/kubernetes/admin.conf
+
+- name: Create kubeconfig directory for the SSH user
+  ansible.builtin.file:
+    path: "/home/{{ ansible_user }}/.kube"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0700'
+
+- name: Copy the cluster admin kubeconfig to the SSH user
+  ansible.builtin.copy:
+    src: /etc/kubernetes/admin.conf
+    dest: "/home/{{ ansible_user }}/.kube/config"
+    remote_src: true
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0600'

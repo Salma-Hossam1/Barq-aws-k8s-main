@@ -1,0 +1,19 @@
+---
+- name: Download the Flannel Kubernetes manifest
+  ansible.builtin.get_url:
+    url: https://github.com/flannel-io/flannel/releases/download/{{ flannel_version }}/kube-flannel.yml
+    dest: /tmp/kube-flannel.yml
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Apply the Flannel CNI manifest
+  ansible.builtin.command:
+    argv:
+      - kubectl
+      - apply
+      - --kubeconfig=/etc/kubernetes/admin.conf
+      - -f
+      - /tmp/kube-flannel.yml
+  register: flannel_apply
+  changed_when: "'created' in flannel_apply.stdout or 'configured' in flannel_apply.stdout"
